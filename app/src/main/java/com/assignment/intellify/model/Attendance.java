@@ -8,6 +8,7 @@ public class Attendance {
     private int absent;
     private int late;
 
+
     public String getClassName() {
         return className;
     }

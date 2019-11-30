@@ -5,9 +5,10 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/info_section"
+        android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:orientation="vertical">
 
         <EditText
@@ -30,4 +31,10 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:layout_centerInParent="true" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list_section"
+        android:layout_below="@+id/info_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </RelativeLayout>

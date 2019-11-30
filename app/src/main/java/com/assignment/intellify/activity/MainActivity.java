@@ -9,12 +9,22 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.assignment.intellify.R;
+import com.assignment.intellify.adapter.StudentAttendanceListAdapter;
+import com.assignment.intellify.model.Attendance;
 import com.assignment.intellify.network.ServiceBuilder;
+import com.assignment.intellify.network.response.StudentInfo;
 import com.assignment.intellify.network.service.StudentInfoService;
 import com.assignment.intellify.presenter.MainActivityPresenter;
 import com.assignment.intellify.view.MainActivityView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements MainActivityView {
 
@@ -64,12 +74,17 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     }
 
     @Override
-    public void onSucess() {
+    public void onSucess(Response<StudentInfo> response) {
+        List<Attendance> attendance = response.body().getAttendance();
+
+        RecyclerView recyclerView = findViewById(R.id.list_section);
+        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+        recyclerView.setAdapter(new StudentAttendanceListAdapter(attendance));
         Toast.makeText(MainActivity.this, "on Sucess", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onFail() {
-        Toast.makeText(MainActivity.this, "on fail", Toast.LENGTH_LONG).show();
+        Toast.makeText(MainActivity.this, "No student exists in Database", Toast.LENGTH_LONG).show();
     }
 }

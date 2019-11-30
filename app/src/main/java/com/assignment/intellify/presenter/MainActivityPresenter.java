@@ -24,7 +24,7 @@ public class MainActivityPresenter {
             @Override
             public void onResponse(Call<StudentInfo> call, Response<StudentInfo> response) {
                 mainActivityView.hideProgressBar();
-                mainActivityView.onSucess();
+                mainActivityView.onSucess(response);
             }
 
             @Override
