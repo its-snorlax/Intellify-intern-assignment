@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,6 +21,7 @@ import com.assignment.intellify.network.response.StudentInfo;
 import com.assignment.intellify.network.service.StudentInfoService;
 import com.assignment.intellify.presenter.MainActivityPresenter;
 import com.assignment.intellify.view.MainActivityView;
+import com.assignment.intellify.viewmodel.StudentAttendanceViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,10 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements MainActivityView {
 
     private ProgressBar progressBar;
+    List<Attendance> attendance = new ArrayList<>();
+    private StudentAttendanceViewModel studentAttendanceViewModel;
+    private StudentAttendanceListAdapter adapter;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,6 +44,15 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         final EditText studentIdEdittext = findViewById(R.id.student_id);
         Button submitButton = findViewById(R.id.submit_button);
         progressBar = findViewById(R.id.progress_bar);
+        recyclerView = findViewById(R.id.list_section);
+
+
+        studentAttendanceViewModel = ViewModelProviders.of(this).get(StudentAttendanceViewModel.class);
+
+        if (!studentAttendanceViewModel.getAtendances().isEmpty()) {
+            attendance.addAll(studentAttendanceViewModel.getAtendances());
+            addLIstDataInRecyclerView();
+        }
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,6 +65,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
                 }
             }
         });
+    }
+
+    private void addLIstDataInRecyclerView() {
+        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+        adapter = new StudentAttendanceListAdapter(attendance);
+        recyclerView.setAdapter(adapter);
     }
 
     private void onSubmitButtonClick(String studentId) {
@@ -74,12 +95,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     }
 
     @Override
-    public void onSucess(Response<StudentInfo> response) {
-        List<Attendance> attendance = response.body().getAttendance();
-
-        RecyclerView recyclerView = findViewById(R.id.list_section);
-        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-        recyclerView.setAdapter(new StudentAttendanceListAdapter(attendance));
+    public void onSuccess(Response<StudentInfo> response) {
+        attendance.addAll(response.body().getAttendance());
+        studentAttendanceViewModel.setAttendances(attendance);
+        addLIstDataInRecyclerView();
         Toast.makeText(MainActivity.this, "on Sucess", Toast.LENGTH_LONG).show();
     }
 

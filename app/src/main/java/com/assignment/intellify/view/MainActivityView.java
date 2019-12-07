@@ -9,7 +9,7 @@ public interface MainActivityView {
 
     void showProgressBar();
 
-    void onSucess(Response<StudentInfo> response);
+    void onSuccess(Response<StudentInfo> response);
 
     void onFail();
 }
